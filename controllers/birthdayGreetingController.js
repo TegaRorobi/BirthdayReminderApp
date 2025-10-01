@@ -74,6 +74,7 @@ const sendBirthdayGreetings = async (req, res) => {
 
     const updates = [];
     let sentGreetingsCount = 0;
+    let failedGreetingSends = 0;
 
     for (const birthday of birthdays) {
       if (birthday.lastGreetingSentAt?.getFullYear() === currentYear) {
@@ -99,6 +100,7 @@ const sendBirthdayGreetings = async (req, res) => {
       } catch (err) {
         console.error(err);
         log('ERROR', `Error sending greeting to <${birthday.email}>: ${err.message}`);
+        failedGreetingSends++
       }
     };
 
@@ -109,6 +111,7 @@ const sendBirthdayGreetings = async (req, res) => {
       'message': sentGreetingsCount > 0 ?
         `Successfully sent out ${sentGreetingsCount} birthday greetings.` :
         'Checks complete. 0 birthday greetings sent.',
+      'failedGreetingSends': failedGreetingSends,
       'totalBirthdaysChecked': birthdays.length
     });
 
